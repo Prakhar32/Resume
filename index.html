@@ -1,139 +1,519 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Prakhar Singh | Unity Developer</title>
-<link rel="stylesheet" href="style.css">
-</head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prakhar Singh — Unity & XR Developer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --bg:        #080C18;
+      --surface:   #0F1524;
+      --accent:    #00D4FF;
+      --text:      #F0F4FF;
+      --muted:     #8892A4;
+      --border:    rgba(0, 212, 255, 0.12);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      padding: 8rem 2rem 6rem;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    /* VR perspective grid — the signature element */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.07) 1px, transparent 1px);
+      background-size: 60px 60px;
+      transform: perspective(500px) rotateX(40deg) scaleY(2.2);
+      transform-origin: center bottom;
+      pointer-events: none;
+    }
+
+    /* Fade grid at top and bottom */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        var(--bg) 0%,
+        transparent 28%,
+        transparent 62%,
+        var(--bg) 100%
+      );
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.1rem;
+    }
+
+    .hero-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(3rem, 9vw, 6.5rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-bio {
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto 2.25rem;
+    }
+
+    .hero-links {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 1.4rem;
+      border-radius: 4px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.18s;
+    }
+
+    .btn-primary { background: var(--accent); color: var(--bg); }
+    .btn-primary:hover { opacity: 0.82; }
+
+    .btn-ghost {
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── LAYOUT ── */
+    .section {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 4.5rem 2rem;
+    }
+
+    .section-label {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
+
+    .section-heading {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      font-weight: 600;
+      margin-bottom: 2.5rem;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    /* ── VIDEO CARDS ── */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr));
+      gap: 1.75rem;
+    }
+
+    .video-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .video-card:hover {
+      border-color: rgba(0, 212, 255, 0.38);
+      transform: translateY(-4px);
+    }
+
+    .video-embed {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+    }
+
+    .video-embed iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+    }
+
+    .video-meta {
+      padding: 1.25rem 1.5rem 1.5rem;
+    }
+
+    .video-company {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.67rem;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.3rem;
+    }
+
+    .video-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .video-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* ── EXPERIENCE ── */
+    .exp-item {
+      display: grid;
+      grid-template-columns: 175px 1fr;
+      gap: 0 2rem;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .exp-item:last-child { border-bottom: none; }
+
+    .exp-period {
+      font-size: 0.78rem;
+      color: var(--muted);
+      padding-top: 0.2rem;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.4;
+    }
+
+    .exp-company {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.975rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .exp-role {
+      font-size: 0.8rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .exp-points {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .exp-points li {
+      font-size: 0.83rem;
+      color: var(--muted);
+      padding-left: 1.1rem;
+      position: relative;
+    }
+
+    .exp-points li::before {
+      content: '—';
+      position: absolute;
+      left: 0;
+      color: rgba(0, 212, 255, 0.35);
+    }
+
+    /* ── SKILLS ── */
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+    }
+
+    .skill-chip {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 0.38rem 0.9rem;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      background: var(--surface);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .footer-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+
+    .footer-sub {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      font-size: 0.83rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.18s;
+    }
+
+    .footer-links a:hover { color: var(--accent); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 560px) {
+      .exp-item { grid-template-columns: 1fr; gap: 0.2rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .video-card { transition: none; }
+    }
+  </style>
+</head>
 <body>
 
-<header>
-<h1>Prakhar Singh</h1>
-<p>Senior Unity Developer | AR/VR | Multiplayer Systems</p>
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Unity · XR · VR · AR</p>
+      <h1 class="hero-name">Prakhar Singh</h1>
+      <p class="hero-bio">6 years building immersive simulations, VR games, and interactive experiences — from enterprise Fortune 500 deployments to shipped consumer titles.</p>
+      <div class="hero-links">
+        <a href="mailto:prkhrsingh3@gmail.com" class="btn btn-primary">Get in touch</a>
+        <a href="https://github.com/Prakhar32" class="btn btn-ghost" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/" class="btn btn-ghost" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </header>
 
-<div class="links">
-<a href="mailto:prkhrsingh3@gmail.com">Email</a>
-<a href="https://github.com/Prakhar32">GitHub</a>
-<a href="https://www.linkedin.com/in/prakhar-singh-317b76124/">LinkedIn</a>
-</div>
-</header>
+  <!-- FEATURED WORK -->
+  <section class="section">
+    <p class="section-label">Work</p>
+    <h2 class="section-heading">Featured Projects</h2>
+    <div class="video-grid">
 
+      <div class="video-card">
+        <div class="video-embed">
+          <iframe
+            src="https://www.youtube.com/embed/LnDWHR5QCxA"
+            title="Cusmat Technologies — AR/VR Training Simulations"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="video-meta">
+          <p class="video-company">Cusmat Technologies</p>
+          <h3 class="video-title">AR/VR Enterprise Training Simulations</h3>
+          <p class="video-desc">XR simulations delivered for Fortune 500 clients including Schneider Electric and Solar Group. Built with Oculus Rift, Mobile VR, ARCore, Vuforia, and Arduino hardware integrations — with real-time Photon multiplayer.</p>
+        </div>
+      </div>
 
-<section>
-<h2>About</h2>
-<p>
-Unity developer with strong experience in AR/VR simulations, multiplayer systems,
-and gameplay programming. Experienced in designing scalable systems,
-shader programming, and building VR simulations for enterprise clients.
-</p>
-</section>
+      <div class="video-card">
+        <div class="video-embed">
+          <iframe
+            src="https://www.youtube.com/embed/7ERlvhIWqzM?start=28"
+            title="BYJU'S — Worksheets Interactive Learning"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="video-meta">
+          <p class="video-company">BYJU'S</p>
+          <h3 class="video-title">Worksheets — Interactive Learning Product</h3>
+          <p class="video-desc">Contributed to an interactive learning platform for primary school students. Focused on performance optimisation for low-end devices, regional language support, and migrating resources to scalable Asset Bundle delivery.</p>
+        </div>
+      </div>
 
+    </div>
+  </section>
 
-<section>
-<h2>Technical Skills</h2>
+  <div class="divider"></div>
 
-<ul>
-<li>C#, Unity3D</li>
-<li>ARCore, Vuforia</li>
-<li>VR: Oculus Rift, HTC Vive, VRTK</li>
-<li>Photon Multiplayer</li>
-<li>Shader Programming</li>
-<li>Java, libGDX</li>
-<li>TDD / BDD</li>
-<li>CI/CD</li>
-</ul>
+  <!-- EXPERIENCE -->
+  <section class="section">
+    <p class="section-label">Experience</p>
+    <h2 class="section-heading">Work History</h2>
 
-</section>
+    <div class="exp-item">
+      <span class="exp-period">Jan 2025 – Jul 2025</span>
+      <div>
+        <div class="exp-company">Cusmat Technologies</div>
+        <div class="exp-role">Technical Consultant</div>
+        <ul class="exp-points">
+          <li>Developing training simulator for mobile platforms.</li>
+        </ul>
+      </div>
+    </div>
 
+    <div class="exp-item">
+      <span class="exp-period">Dec 2025 – Jan 2026</span>
+      <div>
+        <div class="exp-company">Sty1e Studio Inc</div>
+        <div class="exp-role">Unity Developer (Contract)</div>
+        <ul class="exp-points">
+          <li>Developed VR multiplayer shooter.</li>
+        </ul>
+      </div>
+    </div>
 
-<section>
-<h2>Professional Experience</h2>
+    <div class="exp-item">
+      <span class="exp-period">Mar 2025 – May 2025</span>
+      <div>
+        <div class="exp-company">Nihon XR Center, Inc</div>
+        <div class="exp-role">Unity Developer (Contract)</div>
+        <ul class="exp-points">
+          <li>Built VR zombie shooting game.</li>
+        </ul>
+      </div>
+    </div>
 
-<h3>Technical Consultant — Cusmat Technologies (2025–Present)</h3>
-<p>Worked on training simulators for mobile platforms.</p>
+    <div class="exp-item">
+      <span class="exp-period">Apr 2023 – Mar 2024</span>
+      <div>
+        <div class="exp-company">Pole To Win (PTW)</div>
+        <div class="exp-role">Senior Unity Developer</div>
+        <ul class="exp-points">
+          <li>Implemented inverse kinematics to add dynamism to static character animations.</li>
+          <li>Built custom shader effects: dynamic blood, mesh deformation, real-time mesh slicing.</li>
+          <li>Developed 2D games with MVC architecture; integrated ad SDKs into mobile builds.</li>
+        </ul>
+      </div>
+    </div>
 
-<h3>VR Developer — Nihon XR Center (2025)</h3>
-<p>Worked on VR zombie shooting game.</p>
+    <div class="exp-item">
+      <span class="exp-period">Sep 2021 – Mar 2023</span>
+      <div>
+        <div class="exp-company">BYJU'S</div>
+        <div class="exp-role">Unity Developer</div>
+        <ul class="exp-points">
+          <li>Contributed to Worksheets — interactive learning for primary school students.</li>
+          <li>Optimised scenes, assets, and prefabs for playable performance on low-end devices.</li>
+          <li>Added regional language and accent support; migrated resources to Asset Bundle delivery.</li>
+          <li>Built internal tooling for testers and developers to improve iteration speed.</li>
+        </ul>
+      </div>
+    </div>
 
-<h3>VR Developer — Sty1e Studio (2025–2026)</h3>
-<p>Developed VR multiplayer shooter.</p>
+    <div class="exp-item">
+      <span class="exp-period">Jul 2019 – Aug 2021</span>
+      <div>
+        <div class="exp-company">Cusmat Technologies</div>
+        <div class="exp-role">Unity Developer</div>
+        <ul class="exp-points">
+          <li>Delivered AR/VR simulations for Fortune 500 clients: Schneider Electric, Solar Group.</li>
+          <li>Handled client calls, requirements, and change requests directly.</li>
+          <li>Integrated Photon Multiplayer across multiple simulation projects.</li>
+          <li>Led a team across concurrent projects; involved in intern hiring and onboarding.</li>
+        </ul>
+      </div>
+    </div>
 
-<h3>Senior Unity Developer — Pole To Win (2023–2024)</h3>
-<ul>
-<li>Inverse kinematics for dynamic animation</li>
-<li>Shader-based effects: blood, mesh slicing</li>
-<li>2D games using MVC architecture</li>
-<li>Ad integration</li>
-</ul>
+  </section>
 
-<h3>Unity Developer — Byjus (2021–2023)</h3>
-<ul>
-<li>Educational worksheets project</li>
-<li>Developer tools</li>
-<li>Localization and language support</li>
-<li>Asset bundle delivery systems</li>
-<li>Performance optimization for low-end devices</li>
-</ul>
+  <div class="divider"></div>
 
-<h3>Unity Developer — Cusmat Technologies (2019–2021)</h3>
-<ul>
-<li>AR/VR simulations for enterprise training</li>
-<li>Photon multiplayer integration</li>
-<li>Hardware integration with VR devices</li>
-<li>Delivered projects for Schneider Electric</li>
-</ul>
+  <!-- SKILLS -->
+  <section class="section">
+    <p class="section-label">Technical Skills</p>
+    <h2 class="section-heading">Stack</h2>
+    <div class="skills-grid">
+      <span class="skill-chip">Unity 3D</span>
+      <span class="skill-chip">C#</span>
+      <span class="skill-chip">Oculus Rift</span>
+      <span class="skill-chip">HTC Vive</span>
+      <span class="skill-chip">ARCore</span>
+      <span class="skill-chip">Vuforia</span>
+      <span class="skill-chip">VRTK</span>
+      <span class="skill-chip">Mobile VR</span>
+      <span class="skill-chip">Photon Multiplayer</span>
+      <span class="skill-chip">Shader Coding</span>
+      <span class="skill-chip">Mesh Deformation</span>
+      <span class="skill-chip">Inverse Kinematics</span>
+      <span class="skill-chip">Asset Bundle Optimisation</span>
+      <span class="skill-chip">Java</span>
+      <span class="skill-chip">libGDX</span>
+      <span class="skill-chip">TDD / BDD</span>
+      <span class="skill-chip">CI/CD</span>
+      <span class="skill-chip">MVC Architecture</span>
+      <span class="skill-chip">Arduino</span>
+    </div>
+  </section>
 
-</section>
-
-
-<section>
-<h2>Projects</h2>
-
-<ul>
-
-<li>
-<strong>GigaGal</strong> — 2D platformer using libGDX
-</li>
-
-<li>
-<strong>Match-2 Cards</strong> — Card matching game using TDD + CI/CD
-</li>
-
-<li>
-<strong>Nature Cycle VR</strong> — VR simulation of biological cycles
-</li>
-
-<li>
-<strong>Pokemon VR</strong> — VR Pokemon game
-</li>
-
-<li>
-<strong>Crush Multiplayer</strong> — Candy-crush style multiplayer game
-</li>
-
-</ul>
-
-</section>
-
-
-<section>
-<h2>Education</h2>
-
-<p>
-BTech Computer Science  
-JSS Academy of Technical Education, Noida  
-2019 — 75.6%
-</p>
-
-</section>
-
-
-<footer>
-<p>© 2026 Prakhar Singh</p>
-</footer>
-
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-name">Prakhar Singh</div>
+    <p class="footer-sub">Unity Developer · XR Specialist · Open to contract work</p>
+    <div class="footer-links">
+      <a href="mailto:prkhrsingh3@gmail.com">prkhrsingh3@gmail.com</a>
+      <a href="tel:+916388640631">+91 63886 40631</a>
+      <a href="https://github.com/Prakhar32" target="_blank" rel="noopener">github.com/Prakhar32</a>
+    </div>
+  </footer>
 
 </body>
 </html>
